@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios'
-import { Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { lastValueFrom } from 'rxjs'
 import { AxiosResponse } from 'axios'
@@ -36,40 +36,45 @@ export class AppService {
   }
 
   public async evaluateBenfordData(stock: string): Promise<BenfordStockComparisonDto[]> {
-    const { data } = await this.getHistoricalStockData(stock)
-    const { prices } = data
-    const result = []
-
-    //                               1      2      3      4      5      6      7      8      9
-    const BenfordPercentages = [0, 0.301, 0.176, 0.125, 0.097, 0.079, 0.067, 0.058, 0.051, 0.046]
-    const tradingVolumes = prices.filter(tradingData => tradingData.volume)
-
-    const firstDigitsOfVolume = tradingVolumes.map((item: StockHistoricalDataDto) => {
-      return item.volume.toString()[0]
-    })
-    
-    const firstDigitFrequencies = getDigitsFrequencies(firstDigitsOfVolume)
-
-    for(let n = 1; n <= 9; n++){
-      const resultObj = {
-        leadingDigit: n,
-        occurenceCount: 0,
-        occurencePercent: '',
-        comparisonToBL: ''
-      }
+    try {
+      const { data } = await this.getHistoricalStockData(stock)
+      const { prices } = data
+      const result = []
+  
+      //                               1      2      3      4      5      6      7      8      9
+      const BenfordPercentages = [0, 0.301, 0.176, 0.125, 0.097, 0.079, 0.067, 0.058, 0.051, 0.046]
+      const tradingVolumes = prices.filter(tradingData => tradingData.volume)
+  
+      const firstDigitsOfVolume = tradingVolumes.map((item: StockHistoricalDataDto) => {
+        return item.volume.toString()[0]
+      })
       
-      const occurenceCount = firstDigitFrequencies[n]
-      const occurence = occurenceCount / prices.length
-      resultObj.occurenceCount = occurenceCount
-      resultObj.occurencePercent = `${(occurence * 100).toFixed(3) } %`
-
-      const BenfordFrequency = BenfordPercentages[n]
-      resultObj.comparisonToBL = `${((occurence - BenfordFrequency) * 100).toFixed(3) } %`
-      result.push(resultObj)
+      const firstDigitFrequencies = getDigitsFrequencies(firstDigitsOfVolume)
+  
+      for(let n = 1; n <= 9; n++){
+        const resultObj = {
+          leadingDigit: n,
+          occurenceCount: 0,
+          occurencePercent: '',
+          comparisonToBL: ''
+        }
+        
+        const occurenceCount = firstDigitFrequencies[n]
+        const occurence = occurenceCount / prices.length
+        resultObj.occurenceCount = occurenceCount
+        resultObj.occurencePercent = `${(occurence * 100).toFixed(3) } %`
+  
+        const BenfordFrequency = BenfordPercentages[n]
+        resultObj.comparisonToBL = `${((occurence - BenfordFrequency) * 100).toFixed(3) } %`
+        result.push(resultObj)
+      }
+  
+      return result
+    }catch(err) {
+      const { response } = err
+      const {statusText = 'Internal Api error', status = 500 } = response
+      throw new HttpException(statusText, status)
     }
-
-    return result
-
   }
 
 }
