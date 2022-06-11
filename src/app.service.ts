@@ -47,7 +47,7 @@ export class AppService {
     const firstDigitsOfVolume = tradingVolumes.map((item: StockHistoricalDataDto) => {
       return item.volume.toString()[0]
     })
-
+    
     const firstDigitFrequencies = getDigitsFrequencies(firstDigitsOfVolume)
 
     for(let n = 1; n <= 9; n++){
