@@ -71,7 +71,7 @@ export class AppService {
   
       return result
     }catch(err) {
-      const { response } = err
+      const { response = {} } = err
       const {statusText = 'Internal Api error', status = 500 } = response
       throw new HttpException(statusText, status)
     }
