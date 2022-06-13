@@ -11,7 +11,7 @@ Benford's law stock API using Nestjs.
 A few things to note in the project:
 * **[Github Actions Workflows](https://github.com/thatshailesh/modusbox-test/blob/master/.github/workflows)** - Pre-configured Github Actions to run automated builds and publish image to Github Packages
 * **[Dockerfile](https://github.com/thatshailesh/modusbox-test/blob/master/Dockerfile)** - Dockerfile to generate docker builds.
-* **[docker-compose](https://github.com/thatshailesh/modusbox-test/blob/master/docker-compose.yml)** - Docker compose script to start service in production mode.
+* **[Docker-compose](https://github.com/thatshailesh/modusbox-test/blob/master/docker-compose.yml)** - Docker compose script to build and start container.
 * **[OpenAPI 3.0 Spec](#Swagger)** - A starter template to get started with API documentation using OpenAPI 3.0. This API spec is also available when running the development server at `http://localhost:3000/swagger-api`
 * **[.env file for configuration](#environment)** - Change server config like app port, mongo url etc
 * **Jest** - Using Jest for running test cases
@@ -46,7 +46,7 @@ docker-compose up
 ### Deployment
 Deployment is automated with Github Actions and deployed on heroku
 
-#### Public Url
+#### Heroku Public Url
 ```
 https://modusbox.herokuapp.com/
 ```
