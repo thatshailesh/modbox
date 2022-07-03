@@ -1,4 +1,4 @@
-# Modusbox Challenge
+# Trading volume distribution using BF law
 
 Benford's law stock API using Nestjs.
 
